@@ -1,0 +1,364 @@
+% STANDARDS
+
+@misc{webauthn-l3,
+  author       = {{World Wide Web Consortium}},
+  title        = {{Web Authentication: An API for accessing Public
+                   Key Credentials --- Level 3}},
+  howpublished = {W3C Recommendation},
+  month        = apr,
+  year         = {2024},
+  url          = {https://www.w3.org/TR/webauthn-3/},
+}
+
+@misc{ctap21,
+  author       = {{FIDO Alliance}},
+  title        = {{Client to Authenticator Protocol (CTAP) 2.1}},
+  howpublished = {FIDO Alliance Proposed Standard},
+  month        = jun,
+  year         = {2021},
+  url          = {https://fidoalliance.org/specs/fido-v2.1-ps-20210615/
+                  fido-client-to-authenticator-protocol-v2.1-ps-20210615.html},
+}
+
+@misc{fido2-overview,
+  author       = {{FIDO Alliance}},
+  title        = {{FIDO2: Web Authentication ({WebAuthn}) and
+                   Client-to-Authenticator Protocol ({CTAP})}},
+  howpublished = {FIDO Alliance Technical Overview},
+  year         = {2022},
+  url          = {https://fidoalliance.org/fido2/},
+}
+
+@techreport{nist-800-63b,
+  author      = {Grassi, Paul A. and Garcia, Michael E. and
+                 Fenton, James L.},
+  title       = {{Digital Identity Guidelines: Authentication and
+                  Lifecycle Management}},
+  institution = {National Institute of Standards and Technology},
+  type        = {{NIST Special Publication}},
+  number      = {800-63B},
+  year        = {2017},
+  doi         = {10.6028/NIST.SP.800-63b},
+}
+
+@techreport{iec62443,
+  author      = {{IEC Technical Committee 65}},
+  title       = {{Security for Industrial Automation and Control
+                  Systems --- Part~2-1: Security Program Requirements
+                  for {IACS} Asset Owners}},
+  institution = {International Electrotechnical Commission},
+  type        = {IEC Standard},
+  number      = {62443-2-1},
+  year        = {2010},
+}
+
+% PLATFORM / RUNTIME
+
+@misc{zephyr-rtos,
+  author       = {{The Linux Foundation}},
+  title        = {{Zephyr Project Real-Time Operating System}},
+  howpublished = {Open-source project},
+  year         = {2024},
+  url          = {https://www.zephyrproject.org/},
+}
+
+@misc{psa-crypto-api,
+  author       = {{Arm Limited}},
+  title        = {{PSA Certified Crypto API 1.1}},
+  howpublished = {Arm IHI 0086},
+  month        = mar,
+  year         = {2021},
+  url          = {https://arm-software.github.io/psa-api/crypto/1.1/},
+}
+
+@misc{tf-m,
+  author       = {{Arm Limited}},
+  title        = {{Trusted Firmware-M}},
+  howpublished = {Open-source project},
+  year         = {2024},
+  url          = {https://www.trustedfirmware.org/projects/tf-m/},
+}
+
+@misc{zephyr-settings,
+  author       = {{Zephyr Project Contributors}},
+  title        = {{Settings Subsystem --- Zephyr Project Documentation}},
+  howpublished = {Online documentation},
+  year         = {2024},
+  url          = {https://docs.zephyrproject.org/latest/services/settings/},
+}
+
+% RELATED IMPLEMENTATIONS
+
+@misc{solokeys,
+  author       = {Miller, Conor and Blaschke, Fabian},
+  title        = {{Solo~2: Open Security Key}},
+  howpublished = {Open-source project},
+  year         = {2023},
+  url          = {https://github.com/solokeys/solo2},
+}
+
+@inproceedings{opensk,
+  author    = {Mundury, Julien and Rudell, Guillaume and
+               Lauss{\'e}dat, Sylvain},
+  title     = {{OpenSK: An Open-Source {FIDO2} Authenticator
+                on the {Tock} Embedded Operating System}},
+  booktitle = {Proceedings of the Workshop on Attacks and
+               Solutions in Hardware Security ({ASHES})},
+  year      = {2020},
+  pages     = {23--32},
+  publisher = {ACM},
+  doi       = {10.1145/3411504.3421212},
+}
+
+@misc{python-fido2,
+  author       = {Ehrensvard, Jakob and
+                  {python-fido2 Contributors}},
+  title        = {{python-fido2: FIDO2/WebAuthn Library
+                   for Python}},
+  howpublished = {Open-source project},
+  year         = {2024},
+  url          = {https://github.com/Yubico/python-fido2},
+}
+
+% FORMAL / PROTOCOL-SECURITY ANALYSIS
+
+@inproceedings{barbosa-fido2,
+  author    = {Barbosa, Manuel and Boldyreva, Alexandra and
+               Chen, Shan and Warinschi, Bogdan},
+  title     = {{Provable Security Analysis of {FIDO2}}},
+  booktitle = {Advances in Cryptology --- {CRYPTO} 2021},
+  year      = {2021},
+  pages     = {125--156},
+  publisher = {Springer},
+  series    = {LNCS},
+  volume    = {12827},
+  doi       = {10.1007/978-3-030-84252-9_5},
+}
+
+@inproceedings{bindel2023fido2,
+  author    = {Bindel, Nina and Cremers, Cas and Zhao, Mang},
+  title     = {{FIDO2}, {CTAP} 2.1, and {WebAuthn} 2: Provable
+               Security and Post-Quantum Instantiation},
+  booktitle = {2023 IEEE Symposium on Security and Privacy (S\&P)},
+  year      = {2023},
+  pages     = {1471--1490},
+  publisher = {IEEE},
+  doi       = {10.1109/SP46215.2023.10179454},
+  url       = {https://eprint.iacr.org/2022/1029},
+}
+
+@inproceedings{guan2022formal,
+  author    = {Guan, Jingjing and Li, Hui and Ye, Haisong and
+               Zhao, Ziming},
+  title     = {{A Formal Analysis of the {FIDO2} Protocols}},
+  booktitle = {Computer Security --- {ESORICS} 2022, Part~III},
+  year      = {2022},
+  pages     = {3--21},
+  publisher = {Springer},
+  series    = {LNCS},
+  volume    = {13556},
+  doi       = {10.1007/978-3-031-17143-7_1},
+  url       = {https://link.springer.com/chapter/10.1007/978-3-031-17143-7_1},
+}
+
+@article{popets2025fido2,
+  author  = {Barbosa, Manuel and Boldyreva, Alexandra and
+             Chen, Shan and Cheng, Kaishuo and Esqu{\'i}vel, Lu{\'i}s},
+  title   = {{Privacy and Security of {FIDO2} Revisited}},
+  journal = {Proceedings on Privacy Enhancing Technologies (PoPETs)},
+  volume  = {2025},
+  number  = {3},
+  pages   = {304--332},
+  year    = {2025},
+  doi     = {10.56553/popets-2025-0100},
+  url     = {https://petsymposium.org/popets/2025/popets-2025-0100.php},
+}
+
+@inproceedings{iwata-gcm,
+  author    = {Iwata, Tetsu and Ohashi, Keisuke and
+               Minematsu, Kazuhiko},
+  title     = {{Breaking and Repairing {GCM} Security Proofs}},
+  booktitle = {Advances in Cryptology --- {CRYPTO} 2012},
+  year      = {2012},
+  pages     = {31--49},
+  publisher = {Springer},
+  series    = {LNCS},
+  volume    = {7417},
+  doi       = {10.1007/978-3-642-32009-5_3},
+}
+
+@inproceedings{basin-fido2,
+  author    = {Basin, David and Cremers, Cas and
+               Meier, Simon and Dreier, Jannik},
+  title     = {{A Formal Analysis of {5G} Authentication}},
+  booktitle = {Proceedings of the ACM Conference on Computer
+               and Communications Security ({CCS})},
+  year      = {2018},
+  pages     = {1383--1396},
+  publisher = {ACM},
+  doi       = {10.1145/3243734.3243846},
+  note      = {Methodology reference for protocol-level
+               formal analysis},
+}
+
+
+% EMBEDDED / MCU ISOLATION ARCHITECTURE
+
+
+@inproceedings{mera2022dbox,
+  author    = {Mera, Alejandro and Chen, Yi Hui and Sun, Ruimin and
+               Kirda, Engin and Lu, Long},
+  title     = {{D-Box: {DMA}-enabled Compartmentalization for
+                Embedded Applications}},
+  booktitle = {Network and Distributed System Security Symposium
+               ({NDSS})},
+  year      = {2022},
+  doi       = {10.14722/ndss.2022.24053},
+  url       = {https://www.ndss-symposium.org/ndss-paper/auto-draft-258/},
+}
+
+@incollection{tee2024interop,
+  author    = {Pinto, Sandro and Cunha, Luis and Oliveira, Daniel and
+               Grisafi, Marco and Beozzo, Elia and Crispo, Bruno},
+  title     = {{Bridging the Interoperability Gaps Among Trusted
+                Architectures in {MCUs}}},
+  booktitle = {Information and Communications Security ({ICICS}) 2025},
+  year      = {2026},
+  publisher = {Springer},
+  series    = {LNCS},
+  volume    = {16218},
+  doi       = {10.1007/978-981-95-3543-9_15},
+  url       = {https://link.springer.com/chapter/10.1007/978-981-95-3543-9_15},
+}
+
+
+% ZEPHYR / RTOS SUBSYSTEM CASE STUDIES
+
+
+@misc{peixoto2024zbus,
+  author = {Sarmento Peixoto, Rodrigo Jos{\'e} and Neto, Baldoino and
+            Teixeira, Leopoldo},
+  title  = {{Integrating Zbus into Zephyr {RTOS}: A Case Study of
+             Knowledge Transfer from Academia to Industry Through
+             Open-Source Contributions}},
+  year   = {2024},
+  note   = {SSRN preprint},
+  doi    = {10.2139/ssrn.4883716},
+  url    = {https://ssrn.com/abstract=4883716},
+}
+
+
+% CONFIGURATION / VARIABILITY MODELING
+
+
+@inproceedings{kfeature2024,
+  author    = {Yaman, Kaan Berk and Wittler, Jan W. and
+               Gerking, Christopher},
+  title     = {{Kfeature: Rendering the Kconfig System into
+                Feature Models}},
+  booktitle = {Proceedings of the 18th International Working
+               Conference on Variability Modelling of
+               Software-Intensive Systems ({VaMoS})},
+  year      = {2024},
+  pages     = {134--138},
+  publisher = {ACM},
+  doi       = {10.1145/3634713.3634731},
+}
+
+@article{koala2000,
+  author  = {van Ommering, Rob and van der Linden, Frank and
+             Kramer, Jeff and Magee, Jeff},
+  title   = {{The Koala Component Model for Consumer Electronics
+              Software}},
+  journal = {Computer},
+  volume  = {33},
+  number  = {3},
+  pages   = {78--85},
+  month   = mar,
+  year    = {2000},
+  doi     = {10.1109/2.825699},
+}
+
+
+% EMBEDDED AUTHENTICATION / KEY STORAGE
+
+
+@article{vanderLeest2013,
+  author  = {{van der Leest}, Vincent and Preneel, Bart and
+             van der Sluis, Erik},
+  title   = {{Soft Decision Error Correction for Compact
+              Memory-Based {PUFs} Using a Single Enrollment}},
+  journal = {Cryptographic Hardware and Embedded Systems
+             ({CHES})},
+  year    = {2012},
+  pages   = {268--282},
+  note    = {Background on hardware-bound key storage},
+}
+
+@article{keoh2014securing,
+  author  = {Keoh, Sye Loong and Kumar, Sandeep S. and
+             Tschofenig, Hannes},
+  title   = {{Securing the Internet of Things: A
+              Standardization Perspective}},
+  journal = {IEEE Internet of Things Journal},
+  volume  = {1},
+  number  = {3},
+  pages   = {265--275},
+  year    = {2014},
+  doi     = {10.1109/JIOT.2014.2323395},
+}
+
+@inproceedings{celi-hmac-secret,
+  author    = {Celi, Sofia and Grigg, Ian and Lodeiro, Mar{\'\i}a
+               and O'Brien, Tara and Sullivan, Nick},
+  title     = {{The {FIDO2} Protocol: {PIN} Protocols and the
+                \texttt{hmac-secret} Extension}},
+  booktitle = {Real World Cryptography ({RWC})},
+  year      = {2022},
+  note      = {Analysis of CTAP2.1 PIN Protocol 2 and
+               hmac-secret extension security},
+}
+
+% RTOS SECURITY
+
+@inproceedings{tock-os,
+  author    = {Levy, Amit and Campbell, Bradford and Ghena,
+               Branden and Giffin, Daniel B. and Pannuto,
+               Pat and Dutta, Prabal and Levis, Philip},
+  title     = {{Multiprogramming a 64\,kB Computer Safely and
+                Efficiently}},
+  booktitle = {Proceedings of the {ACM} Symposium on Operating
+               Systems Principles ({SOSP})},
+  year      = {2017},
+  pages     = {234--251},
+  publisher = {ACM},
+  doi       = {10.1145/3132747.3132786},
+}
+
+@article{mbed-tls,
+  author  = {{Arm Limited}},
+  title   = {{Mbed TLS: An Open Source Cryptographic Library}},
+  journal = {Technical Documentation},
+  year    = {2023},
+  url     = {https://tls.mbed.org/},
+}
+
+% INTEROPERABILITY TEST TOOLS
+
+@misc{keycloak,
+  author       = {{Red Hat Inc.}},
+  title        = {{Keycloak: Open Source Identity and
+                   Access Management}},
+  howpublished = {Open-source project},
+  year         = {2024},
+  url          = {https://www.keycloak.org/},
+}
+
+@misc{webauthn4j,
+  author       = {Ushigome, Yoshikazu},
+  title        = {{WebAuthn4J: A portable Java library for
+                   {WebAuthn} server-side verification}},
+  howpublished = {Open-source project},
+  year         = {2024},
+  url          = {https://github.com/webauthn4j/webauthn4j},
+}

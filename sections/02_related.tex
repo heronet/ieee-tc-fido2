@@ -1,0 +1,52 @@
+% sections/02_related.tex
+
+\section{Related Work}
+\label{sec:related}
+
+\subsection{FIDO2/CTAP2 Protocol-Security Analysis}
+\label{subsec:related-protocol}
+
+A body of work has formally analyzed FIDO2/CTAP2 and WebAuthn at the protocol layer. Bindel, Cremers, and Zhao~\cite{bindel2023fido2} give a provable-security treatment of FIDO2, CTAP~2.1, and WebAuthn~2, including a post-quantum instantiation. Guan et al.~\cite{guan2022formal} present a formal analysis of the FIDO2 protocols using symbolic modeling. Barbosa et al.~\cite{barbosa-fido2} give an earlier provable-security analysis of FIDO2 with CTAP~2.0 and WebAuthn~1, which the Bindel et al. model extends. A later paper by Barbosa et al.~\cite{popets2025fido2} revisits FIDO2's privacy and security properties under updated adversary models. These works establish that the protocol, as specified, meets its stated security goals; none of them examine how a conforming implementation is structured as software, which is the layer this paper addresses. Protocol correctness and implementation architecture are orthogonal concerns, and this paper takes protocol correctness as a given rather than a contribution.
+
+\subsection{Embedded/MCU Isolation Architecture}
+\label{subsec:related-mcu-isolation}
+
+A separate line of work isolates security-critical components on embedded systems using hardware mechanisms. D-Box~\cite{mera2022dbox} provides DMA-enabled compartmentalization for embedded applications, isolating components via memory-protection hardware rather than software convention. Pinto et al.~\cite{tee2024interop} address compartmentalization across heterogeneous TEE architectures on MCUs, using platform-specific hardware security primitives on ARMv7-M and RISC-V. Both operate at the hardware-isolation layer: compromise of one compartment is contained by MPU enforcement or a trusted-execution boundary, independent of how the code within a compartment is organized.
+
+This paper's isolation is software boundary isolation, enforced by interface discipline, header convention, and build-configuration structure rather than hardware memory protection, and it does not assume or require an MPU or TEE. The two approaches are complementary rather than competing: hardware isolation constrains what a compromised module can reach, while software boundary isolation constrains what a well-behaved module can know. This paper studies the latter as a standalone, falsifiable property, useful in particular on MCUs where MPU- or TEE-backed compartmentalization is unavailable or not the deployment target.
+
+\subsection{Zephyr/RTOS Subsystem Case Studies}
+\label{subsec:related-zephyr}
+
+To our knowledge, the only prior work treating a real Zephyr subsystem contribution as an academic case study is Sarmento Peixoto, Neto, and Teixeira's integration of zbus into Zephyr RTOS~\cite{peixoto2024zbus}, documented as a knowledge-transfer case study from academia to industry. This paper shares that case-study form: a real, upstreamable Zephyr subsystem evaluated as evidence rather than described as a design narrative. What is new here is twofold. First, the subsystem sits in a security-critical, externally-specified protocol domain rather than a general-purpose messaging bus. Second, the evaluation includes a falsifiability apparatus (Kconfig-tree grep, \texttt{\#include}-dependency grep, header-convention cross-check) that ties architectural claims to structurally checkable evidence in the source tree rather than to the author's description of it.
+
+\subsection{Configuration/Variability Modeling}
+\label{subsec:related-config}
+
+This paper's methodology of treating Kconfig structure as architectural evidence has lineage in the configuration-modeling literature. Yaman, Wittler, and Gerking's Kfeature~\cite{kfeature2024} renders the Kconfig system into feature models, formalizing the idea that build-configuration structure encodes real architectural variability rather than incidental build options. Van Ommering et al.'s Koala component model~\cite{koala2000} establishes, in the consumer-electronics-software setting, the broader lineage of using component boundaries and explicit interfaces, rather than prose description, as the unit of architectural claim and evidence. This is a precedent that this paper's boundary and component framing, along with its Kconfig- and header-convention-based falsifiability tests, build on directly.
+
+\subsection{Open FIDO2 Implementations}
+\label{subsec:related-opensource}
+
+Existing open FIDO2 implementations, OpenSK~\cite{opensk} and SoloKeys/Solo2~\cite{solokeys}, are positioned here as a design-assumption contrast rather than as academic related work. Each assumes a dedicated authenticator: the firmware image exists to be a security key, and the codebase is organized around that single purpose. This paper's design assumption is the opposite: FIDO2 as a retrofittable OS-level subsystem on shared-purpose firmware, where a host application (sensor node, industrial controller, smart-lock firmware) may not know or care about the authenticator subsystem's internals, and the subsystem must not leak security-critical state across that boundary. Safely retrofitting a security-critical, externally-specified protocol into firmware not designed around it is the gap this paper studies. SoloKeys, as the closest same-family (C/STM32) implementation, is used later as the primary cross-implementation baseline in the evaluation (Section~\ref{sec:evaluation}), with OpenSK included conditionally once a fair normalization axis is fixed (Section~\ref{sec:methodology}).
+
+Taken together, no prior work sits at the intersection of these axes: a software-boundary-isolated (not hardware-isolated), falsifiably-evidenced (not merely narrated), security-critical (not general-purpose) subsystem, retrofitted into shared-purpose firmware (not built as a dedicated device). Each individual axis has precedent above; their conjunction, evaluated as a single case study, is the gap this paper addresses.
+
+\begin{table}[t]
+\centering
+\caption{Isolation mechanism across the closest architectural precedents. Configuration/variability modeling (Section~\ref{subsec:related-config}) and open FIDO2 implementations (Section~\ref{subsec:related-opensource}) are omitted, as neither proposes an isolation mechanism to compare against.}
+\label{tab:related-positioning}
+\small
+\begin{tabular}{@{}p{0.30\linewidth} p{0.24\linewidth} p{0.36\linewidth}@{}}
+\toprule
+\textbf{Work} & \textbf{Layer} & \textbf{Isolation / Evidence} \\
+\midrule
+Bindel et al.~\cite{bindel2023fido2}      & Protocol           & Cryptographic proof \\
+Guan et al.~\cite{guan2022formal}         & Protocol           & Symbolic model \\
+D-Box~\cite{mera2022dbox}                 & Hardware/MCU       & DMA-aware MPU compartmentalization \\
+Pinto et al.~\cite{tee2024interop}        & Hardware/MCU       & TEE, hardware security primitives \\
+zbus~\cite{peixoto2024zbus}               & RTOS subsystem     & Software module boundaries \\
+\textbf{This paper}                       & \textbf{RTOS subsystem (security-critical)} & \textbf{Kconfig / header-convention enforced boundaries} \\
+\bottomrule
+\end{tabular}
+\end{table}
