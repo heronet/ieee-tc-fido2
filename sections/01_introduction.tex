@@ -1,7 +1,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-\IEEEPARstart{P}{asswordless} authentication built on FIDO2, comprising the WebAuthn API~\cite{webauthn-l3} and the Client to Authenticator Protocol (CTAP)~\cite{ctap21}, is now a default authentication option across major browsers, operating systems, and online services~\cite{fido2-overview}. The authenticator side of this protocol, the device that holds credentials and proves possession of them, has almost universally been implemented as a dedicated security key: a firmware image whose sole purpose is to be an authenticator.
+Passwordless authentication built on FIDO2, comprising the WebAuthn API~\cite{webauthn-l3} and the Client to Authenticator Protocol (CTAP)~\cite{ctap21}, is now a default authentication option across major browsers, operating systems, and online services~\cite{fido2-overview}. The authenticator side of this protocol, the device that holds credentials and proves possession of them, has almost universally been implemented as a dedicated security key: a firmware image whose sole purpose is to be an authenticator.
 
 That assumption increasingly does not match how embedded deployments actually look. A growing class of MCU-based devices, sensor nodes, industrial controllers, smart-lock firmware, and similar shared-purpose systems, would benefit from FIDO2 authentication as one feature among several, not as the reason the firmware exists. Existing open FIDO2 implementations such as OpenSK~\cite{opensk} and SoloKeys/Solo2~\cite{solokeys} are built around the dedicated-device assumption and do not address this deployment shape. Retrofitting a security-critical, externally-specified protocol into firmware that was not designed around it, without requiring the host application to know or care about the authenticator subsystem's internals, and without leaking security-critical state across that boundary, is an under-studied integration scenario.
 
@@ -9,13 +9,12 @@ Prior work addresses adjacent parts of this problem but not its intersection. Pr
 
 This paper's contribution is a reusable architectural pattern: strict interface boundaries between transport, crypto, CBOR parsing, storage, attestation, and user-presence concerns, such that each is independently replaceable and none has implicit knowledge of the others' internals. Security here is a property of the subsystem's boundary, not a claim about cryptographic primitives: the underlying cryptographic operations are delegated to the PSA Crypto API~\cite{psa-crypto-api} and are out of scope, while what the subsystem itself owns and must be shown correct is the isolation logic around that boundary, retry-counter ordering, lockout state, credential binding parameters, and the guarantee that a buggy or compromised host application cannot reach that state directly. The pattern is demonstrated, not merely proposed, through a complete CTAP2.1 implementation built as a Zephyr RTOS subsystem. The implementation is the vehicle; the pattern, and the evidence that it holds under measurement rather than only under inspection, is the contribution.
 
-Four research questions structure the evaluation.
+Three research questions structure the evaluation.
 
 \begin{itemize}
 \item \textbf{RQ1.} Composability: can the subsystem be integrated as a side feature into an existing, unrelated Zephyr application without touching that application's core logic?
-\item \textbf{RQ2.} Portability: can a new transport be added by touching only new code, with zero modifications to the protocol core?
+\item \textbf{RQ2.} Portability: does the boundary design deliver real hardware portability, not just architectural intent? A second transport, a Bluetooth Low Energy implementation authored independently against the existing transport API, is used as the primary evidence: does it require zero modifications to the protocol core?
 \item \textbf{RQ3.} Cost of isolation: what is the measurable overhead, in footprint, latency, and dispatch cost, of enforcing these boundaries compared to tightly coupled alternatives, including a comparison against SoloKeys and, conditionally, OpenSK?
-\item \textbf{RQ4.} Soundness of isolation: do the falsifiability tests from Section~\ref{sec:architecture} (Kconfig-tree structure, \texttt{\#include}-dependency isolation, header-convention split) hold under direct inspection of the implementation, not just as a design claim?
 \end{itemize}
 
 The generalizability claim in this paper is scoped deliberately. RQ1 and RQ2 jointly support the claim that this architectural pattern works for FIDO2 as an OS-level subsystem, not a one-off application. They do not claim that the pattern generalizes to a second, unrelated subsystem; no second prototype is built or evaluated here, and that extension is left as future work.
