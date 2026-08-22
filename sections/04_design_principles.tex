@@ -1,0 +1,18 @@
+% sections/04_design_principles.tex
+
+\section{Design Principles}
+\label{sec:design-principles}
+
+\subsection{Cardinality-Matched Polymorphism}
+\label{subsec:design-cardinality}
+
+The choice of polymorphism mechanism per concern is not arbitrary; it follows directly from what CTAP2.1 actually requires. A device has exactly one identity and one credential store, so Storage is structurally single-instance regardless of implementation choice. User presence and attestation are likewise single per device under the specification: there is one physical presence gesture and one attestation statement format in effect at a time. Transport is the only concern the specification allows to be legitimately plural: a conforming authenticator may expose USB, BLE, and NFC simultaneously, and a host may reach the same credential store over any of them.
+
+The Zephyr-level mechanism realizing this split, link-time binding for the single-instance concerns and an iterable section for Transport, is already given in Table~\ref{tab:fourtier} and is not repeated here. The principle is the CTAP2-semantic argument above: abstraction mechanism should match concern cardinality, not be applied uniformly across all pluggable concerns regardless of whether plurality is ever meaningful. A single-instance concern implemented behind a vtable pays an indirection cost for a degree of freedom, runtime backend swapping, that the specification never permits it to use.
+
+\subsection{Temporal Isolation via Forward-Compatible CBOR Parsing}
+\label{subsec:design-temporal}
+
+The isolation properties described in Section~\ref{sec:architecture} are spatial: module A has no compile-time or runtime visibility into module B's internals. A second, temporal form of isolation is present in the CBOR layer specifically. \texttt{fido2\_cbor.c} skips unrecognized CBOR map keys during decode (\texttt{zcbor\_any\_skip()}) rather than treating them as decode errors. A future CTAP2.x extension that adds new optional parameters does not require touching the parser to remain compatible with it; unrecognized keys are silently passed over rather than causing rejection.
+
+This matters for the same boundary-isolation argument as Section~\ref{sec:architecture}, applied along a different axis. Spatial isolation keeps today's modules from depending on each other's internals; temporal isolation keeps today's parser from depending on tomorrow's protocol surface remaining unchanged. Both are the same underlying discipline, minimizing the assumptions one part of the system is permitted to make about another, applied to two different kinds of coupling.

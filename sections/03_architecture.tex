@@ -26,10 +26,12 @@ Public, wide, single-instance & Storage & Single & Wide ($\sim$15 ops) & \texttt
 \addlinespace
 Public, wide, multi-instance & Transport & Multi & Wide (4 ops, multi-inst.) & \texttt{struct fido2\_transport\_api} vtable plus \texttt{FIDO2\_TRANSPORT\_DEFINE()} / \texttt{STRUCT\_SECTION\_ITERABLE}; USB HID and BLE are both real, concurrently-registrable implementations against this API. \\
 \addlinespace
-Fixed, never backend-selected & Crypto, CBOR, ClientPIN & n/a & n/a & No Kconfig \texttt{choice}, no backend struct; \texttt{PSA\_CRYPTO}/\texttt{ZCBOR}/\texttt{ZCBOR\_CANONICAL} are \texttt{select}ed unconditionally at the top-level \texttt{menuconfig FIDO2}. \\
+Fixed, never backend-selected & Crypto, CBOR & n/a & n/a & No Kconfig \texttt{choice}, no backend struct; \texttt{PSA\_CRYPTO}/\texttt{ZCBOR}/\texttt{ZCBOR\_CANONICAL} are \texttt{select}ed unconditionally at the top-level \texttt{menuconfig FIDO2}. \\
 \bottomrule
 \end{tabular}
 \end{table*}
+
+\texttt{fido2\_clientpin.c} does not appear in Table~\ref{tab:fourtier}; it is not a distinct concern with its own backend-selection story, and its relationship to \texttt{fido2\_core.c} is addressed in Section~\ref{subsec:arch-ignorance}.
 
 \textbf{Falsifiability test (Kconfig).} Only the four backend-selectable concerns, Attestation, Transport, User Presence, and Storage, have subdirectory Kconfig files \texttt{rsource}d from the top-level \texttt{menuconfig FIDO2}: \texttt{attestation/Kconfig}, \texttt{transport/Kconfig}, \texttt{up/Kconfig}, and \texttt{storage/Kconfig}. Crypto and CBOR appear nowhere as a \texttt{choice}; \texttt{PSA\_CRYPTO}, \texttt{ZCBOR}, and \texttt{ZCBOR\_CANONICAL} are \texttt{select}ed unconditionally at \texttt{menuconfig FIDO2} alongside a long list of concrete PSA algorithm/key-type selects (\texttt{PSA\_WANT\_ALG\_ECDSA}, \texttt{PSA\_WANT\_ALG\_SHA\_256}, \texttt{PSA\_WANT\_ALG\_GCM}, \texttt{PSA\_WANT\_ALG\_HMAC}, \texttt{PSA\_WANT\_ALG\_CBC\_NO\_PADDING}, and others), none of which are gated behind a \texttt{choice}.
 
@@ -40,15 +42,17 @@ Storage's \texttt{choice} block, \texttt{FIDO2\_STORAGE\_BACKEND}, currently off
 
 One further falsifiable detail worth mentioning: \texttt{FIDO2\_UP\_ALWAYS}, the ``always approve'' user-presence backend, \texttt{select}s \texttt{NOT\_SECURE} in the Kconfig tree itself. The security warning of bypassing user presence is not only documented in prose, it is also encoded as a build-time-visible dependency a reviewer of the Kconfig tree would see without reading any documentation.
 
+A second, independent artifact confirms the same fixed/pluggable line. The four backend-selectable concerns, \texttt{fido2.h}, \texttt{fido2\_attestation.h}, \texttt{fido2\_transport.h}, \texttt{fido2\_storage.h}, and \texttt{fido2\_up.h}, live under \texttt{include/zephyr/authentication/fido2/}, use the Zephyr public-API include-guard convention (\texttt{ZEPHYR\_INCLUDE\_AUTHENTICATION\_FIDO2\_..\_H\_}), and carry \texttt{@ingroup fido2}, \texttt{@since}, and \texttt{@version} Doxygen tags. Crypto and CBOR use plain local guards (\texttt{FIDO2\_CRYPTO\_H\_}, \texttt{FIDO2\_CBOR\_H\_}) with no \texttt{@ingroup} and no version tags, marking them as internal implementation headers split into separate files for maintainability rather than for pluggability. Two independent artifacts, documentation tooling convention and build configuration, converge on the same fixed/pluggable line without either being derived from the other.
+
 \subsection{Crypto as a Fixed, Delegated Tier}
 \label{subsec:arch-crypto}
 
-\texttt{fido2\_crypto.c} is a fixed wrapper, not a backend selected via a struct, and has no Kconfig choice at all. Portability is delegated one level down to the PSA Crypto API~\cite{psa-crypto-api}, which abstracts hardware-backed versus software crypto beneath the subsystem. This is portability-via-delegation, distinct from and weaker than the portability-via-backend-selection that Storage, Attestation, User Presence, and Transport get through Kconfig. \texttt{fido2\_crypto.h} and \texttt{fido2\_cbor.h} both use plain local include guards (\texttt{FIDO2\_CRYPTO\_H\_}, \texttt{FIDO2\_CBOR\_H\_}) with no \texttt{@ingroup} or version tag, unlike the four public headers described below, further confirming that these are internal implementation files split for maintainability rather than pluggability.
+\texttt{fido2\_crypto.c} is a fixed wrapper, not a backend selected via a struct, and has no Kconfig choice at all. Portability is delegated one level down to the PSA Crypto API~\cite{psa-crypto-api}, which abstracts hardware-backed versus software crypto beneath the subsystem. This is portability-via-delegation, distinct from and weaker than the portability-via-backend-selection that Storage, Attestation, User Presence, and Transport get through Kconfig.
 
 \subsection{Minimal Public Surface}
 \label{subsec:arch-surface}
 
-The entire application-facing API is five functions and one callback type: \texttt{fido2\_init()}, \texttt{fido2\_start()}, \texttt{fido2\_stop()}, \texttt{fido2\_set\_state\_callback()}, \texttt{fido2\_get\_state()}, and \texttt{fido2\_reset()}. Nothing else crosses the host/subsystem boundary; a host application that only ever calls these six symbols has no way to observe or alter subsystem-internal state.
+The entire application-facing API is six functions and one callback type: \texttt{fido2\_init()}, \texttt{fido2\_start()}, \texttt{fido2\_stop()}, \texttt{fido2\_set\_state\_callback()}, \texttt{fido2\_get\_state()}, and \texttt{fido2\_reset()}. Nothing else crosses the host/subsystem boundary; a host application that only ever calls these six symbols has no way to observe or alter subsystem-internal state.
 
 \subsection{Mutual Ignorance Between Modules}
 \label{subsec:arch-ignorance}
@@ -64,7 +68,7 @@ This is the concrete property the composability claim rests on, and it is falsif
 \item \textit{User presence doesn't know about anything else.} \texttt{fido2\_up\_wait()}/\texttt{fido2\_up\_cancel()} is a pure blocking-gesture abstraction with a single kernel-header dependency.
 \end{itemize}
 
-Only \texttt{fido2\_core.c} is permitted to include all of the above; it is the single point of coupling in the subsystem.
+\texttt{fido2\_clientpin.c} is not a peer module subject to the rule above; it is an extension of \texttt{fido2\_core.c}, factored into a separate file to keep \texttt{fido2\_core.c} from growing unwieldy, not a boundary-isolated concern in its own right. It has no public header, no Kconfig entry, and no backend-selection mechanism, unlike every module in Table~\ref{tab:fourtier}'s pluggable tiers. Consequently its direct includes of \texttt{fido2\_crypto.h}, \texttt{fido2\_cbor.h}, and \texttt{fido2\_storage.h} are part of core's own orchestration logic, not a violation of module mutual ignorance. \texttt{fido2\_core.c} and \texttt{fido2\_clientpin.c} together are the only files permitted to include more than one of the module headers above.
 
 \subsection{Zero-Touch Extensibility}
 \label{subsec:arch-extensibility}
@@ -81,7 +85,7 @@ Large per-command structures, \texttt{mc\_params}, \texttt{ga\_params}, \texttt{
 
 Table~\ref{tab:scope} states plainly what is implemented, stubbed, or absent as of this submission, derived directly from the \texttt{switch} statements in \texttt{process\_command()} and \texttt{handle\_client\_pin()} rather than from a design description.
 
-\begin{table}
+\begin{table}[t]
 \centering
 \caption{CTAP2.1 command and subcommand implementation status.}
 \label{tab:scope}
